@@ -1,0 +1,23 @@
+.form {
+  font-size: 15px;
+  box-sizing: border-box;
+  width: 40vw;
+  background-color: rgb(185, 185, 185);
+  margin-left: 30vw;
+  border: 2px solid rgb(54, 54, 54);
+  border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.form label {
+  width: auto;
+}
+
+.form input {
+  width: 80%;
+}
+
+.form button {
+  font-size: 18px;
+}
