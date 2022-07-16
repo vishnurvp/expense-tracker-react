@@ -1,7 +1,9 @@
-import React, { Fragment, useContext, useEffect, useRef } from "react";
+import React, { Fragment, useContext, useEffect, useRef, useState} from "react";
+import { Redirect } from "react-router-dom";
 import AuthContext from "../../context/auth-context";
 
 const EditProfile = (props) => {
+  const [exit, setExit] = useState(false);
   const authCtx = useContext(AuthContext);
   const APIkey = authCtx.APIkey;
   const dispName = useRef();
@@ -21,11 +23,12 @@ const EditProfile = (props) => {
     )
     .then(response=> response.json())
     .then(data=>{
-        console.log(data);
         dispName.current.value = data.users[0].displayName || '';
         dispImg.current.value = data.users[0].photoUrl || '';
+        authCtx.setEmail(data.users[0].email || '');
+        authCtx.setIsEmailVerified(data.users[0].emailVerified);
     });
-  },[APIkey, authCtx.token]);
+  },[APIkey, authCtx]);
 
   const profileEditSubmitHandler = async (event) => {
     event.preventDefault();
@@ -52,8 +55,13 @@ const EditProfile = (props) => {
     event.target.elements["nameInp"].value = "";
     event.target.elements["photoUrlInp"].value = "";
   };
+
+  const closeClickHandler = () => {
+    setExit(true);
+  }
   return (
     <Fragment>
+      {exit && <Redirect to='/welcome'/>}
       <form onSubmit={profileEditSubmitHandler}>
         <h3>Edit Profile</h3>
         <label htmlFor="nameInp">Your Name</label>
@@ -66,6 +74,7 @@ const EditProfile = (props) => {
         <br />
         <button id="submitEditBtn">Edit</button>
       </form>
+      <button onClick={closeClickHandler}>Close</button>
     </Fragment>
   );
 };

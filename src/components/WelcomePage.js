@@ -1,9 +1,28 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
 import AuthContext from "../context/auth-context";
-import EditProfile from "./authentication/EditProfile";
 
 const WelcomePage = (props) => {
   const authCtx = useContext(AuthContext);
+
+  useEffect(()=>{
+    fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${authCtx.APIkey}`,
+    {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            idToken: authCtx.token,
+        }),
+    }
+    )
+    .then(response=> response.json())
+    .then(data=>{
+        authCtx.setEmail(data.users[0].email || '');
+        authCtx.setIsEmailVerified(data.users[0].emailVerified);
+    });
+  },[authCtx])
 
   const [editprofile, setEditProfile]=useState(false);
   const editProfileClickHandler = () => {
@@ -31,6 +50,8 @@ const WelcomePage = (props) => {
   const logoutClickHandler = () => {
     authCtx.logout();
   }
+  
+
   return (
     <Fragment>
       <h1>Welcome</h1>
@@ -38,9 +59,9 @@ const WelcomePage = (props) => {
       {!editprofile && <button
         onClick={editProfileClickHandler}
       >{`Your profile is incomplete \nClick hear to edit`}</button>}
-      {editprofile && <EditProfile/>}
+      {editprofile && <Redirect to={'/editprofile'}/>}
       <br/>
-      <button onClick={emailVerifyClickHandler}>Verify your Email ID</button>
+      {!authCtx.isEmailVerified ? <button onClick={emailVerifyClickHandler}>Verify your Email ID</button> : <p>Email Verified</p>}
     </Fragment>
   );
 };

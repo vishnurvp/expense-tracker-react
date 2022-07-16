@@ -5,6 +5,7 @@ import LogIn from "./components/authentication/LogIn";
 import AuthContext from "./context/auth-context";
 import WelcomePage from "./components/WelcomePage";
 import ForgotPassword from "./components/authentication/ForgotPassword";
+import EditProfile from "./components/authentication/EditProfile";
 function App() {
   const authCtx = useContext(AuthContext);
 
@@ -22,6 +23,9 @@ function App() {
         </Route>
         <Route path={"/forgotpassword"}>
           <ForgotPassword />
+        </Route>
+        <Route path={'/editprofile'}>
+          <EditProfile/>
         </Route>
       </Switch>
     </div>
