@@ -17,6 +17,10 @@ export const AuthContextProvider = (props) => {
     setToken(token);
   };
 
+  const logoutHandler = () => {
+    setToken('');
+  }
+
   const editProfileHandler = () => {
 
   }
@@ -26,6 +30,7 @@ export const AuthContextProvider = (props) => {
     isLoggedIn: isLoggedIn,
     token: token,
     login: loginHandler,
+    logout: logoutHandler,
     editProfile: editProfileHandler,
 
   };

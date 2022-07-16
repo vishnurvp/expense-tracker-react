@@ -27,13 +27,19 @@ const WelcomePage = (props) => {
     .catch(err=>console.log(err));
 
   }
+
+  const logoutClickHandler = () => {
+    authCtx.logout();
+  }
   return (
     <Fragment>
       <h1>Welcome</h1>
+      <button onClick={logoutClickHandler}>Log Out</button>
       {!editprofile && <button
         onClick={editProfileClickHandler}
       >{`Your profile is incomplete \nClick hear to edit`}</button>}
       {editprofile && <EditProfile/>}
+      <br/>
       <button onClick={emailVerifyClickHandler}>Verify your Email ID</button>
     </Fragment>
   );

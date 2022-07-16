@@ -19,12 +19,12 @@ const EditProfile = (props) => {
         }),
     }
     )
-    .then(response=> response.json()
+    .then(response=> response.json())
     .then(data=>{
         console.log(data);
         dispName.current.value = data.users[0].displayName || '';
         dispImg.current.value = data.users[0].photoUrl || '';
-    }));
+    });
   },[APIkey, authCtx.token]);
 
   const profileEditSubmitHandler = async (event) => {
