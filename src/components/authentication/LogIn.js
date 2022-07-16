@@ -1,8 +1,13 @@
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useContext, useState } from "react";
+import AuthContext from "../../context/auth-context";
+
 import classes from "./LogIn.module.css";
+import SignUp from "./SignUp";
 
 const LogIn = () => {
+  const [signUp, setSignUp] = useState(false);
+  const authCtx = useContext(AuthContext);
+
   const loginHandler = async (event) => {
     event.preventDefault();
     const email = event.target.elements["logInEmail"].value;
@@ -29,9 +34,11 @@ const LogIn = () => {
           }
         );
         const data = await response.json();
-        console.log(data);
-        if(data.error.code===400) {
+        // console.log(data);
+        if (data.error) {
           alert(data.error.message);
+        } else {
+          authCtx.login(data.idToken);
         }
       } catch (err) {
         alert(err.error.message);
@@ -41,27 +48,38 @@ const LogIn = () => {
       event.target.elements["password"].value = "";
     }
   };
+
+  const signUpClickHandler = () => {
+    setSignUp(true);
+  };
+  const signUpHandler = (bool) => {
+    setSignUp(bool);
+  };
   return (
     <Fragment>
-      <form className={classes.form} onSubmit={loginHandler}>
-        <label htmlFor="email">Email</label>
-        <br />
-        <input id="logInEmail" type="email"></input>
-        <br />
-        <label htmlFor="password">Password</label>
-        <br />
-        <input id="password" type="password"></input>
-        <br />
-        <button id="logInBtn" type="submit">
-          Log In
-        </button>
-        <br />
-      </form>
-      <Link to="/signup">
-        Don't have an account?
-        <br />
-        Click heare to Sign Up
-      </Link>      
+      {!signUp && <Fragment>
+        <form className={classes.form} onSubmit={loginHandler}>
+          <label htmlFor="email">Email</label>
+          <br />
+          <input id="logInEmail" type="email"></input>
+          <br />
+          <label htmlFor="password">Password</label>
+          <br />
+          <input id="password" type="password"></input>
+          <br />
+          <button id="logInBtn" type="submit">
+            Log In
+          </button>
+          <br />
+        </form>
+        <p onClick={signUpClickHandler} style={{textDecoration: 'underline'}}>
+          Don't have an account?
+          <br />
+          Click heare to Sign Up
+        </p>
+      </Fragment>}
+      {signUp &&
+        <SignUp onSignUp={signUpHandler}/>}
     </Fragment>
   );
 };

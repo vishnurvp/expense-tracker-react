@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import classes from "./SignUp.module.css";
 
-const SignUp = () => {
+const SignUp = (props) => {
   const signuphandler = async (event) => {
     event.preventDefault();
     const email = event.target.elements["email"].value;
@@ -29,6 +29,7 @@ const SignUp = () => {
         );
         const data = await response.json();
         //   console.log(data);
+        props.onSignUp(false);
         alert(`Signup Successfull \nYour Email: ${data.email}`);
       } catch (err) {
         alert(err.error.message);
