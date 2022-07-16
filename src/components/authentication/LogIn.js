@@ -1,4 +1,5 @@
 import React, { Fragment, useContext, useState } from "react";
+import { Redirect} from "react-router-dom";
 import AuthContext from "../../context/auth-context";
 
 import classes from "./LogIn.module.css";
@@ -6,6 +7,8 @@ import SignUp from "./SignUp";
 
 const LogIn = () => {
   const [signUp, setSignUp] = useState(false);
+  const [forgotPass, setForgotPass] = useState(false);
+
   const authCtx = useContext(AuthContext);
 
   const loginHandler = async (event) => {
@@ -55,31 +58,48 @@ const LogIn = () => {
   const signUpHandler = (bool) => {
     setSignUp(bool);
   };
+
+  const forgotPasswordClickHandler = () => {
+    setForgotPass(true);
+  };
+
   return (
     <Fragment>
-      {!signUp && <Fragment>
-        <form className={classes.form} onSubmit={loginHandler}>
-          <label htmlFor="email">Email</label>
+      {!signUp && (
+        <Fragment>
+          <form className={classes.form} onSubmit={loginHandler}>
+            <label htmlFor="email">Email</label>
+            <br />
+            <input id="logInEmail" type="email"></input>
+            <br />
+            <label htmlFor="password">Password</label>
+            <br />
+            <input id="password" type="password"></input>
+            <br />
+            <button id="logInBtn" type="submit">
+              Log In
+            </button>
+            <br />
+          </form>
+          <p
+            onClick={signUpClickHandler}
+            style={{ textDecoration: "underline" }}
+          >
+            Don't have an account?
+            <br />
+            Click heare to Sign Up
+          </p>
           <br />
-          <input id="logInEmail" type="email"></input>
-          <br />
-          <label htmlFor="password">Password</label>
-          <br />
-          <input id="password" type="password"></input>
-          <br />
-          <button id="logInBtn" type="submit">
-            Log In
-          </button>
-          <br />
-        </form>
-        <p onClick={signUpClickHandler} style={{textDecoration: 'underline'}}>
-          Don't have an account?
-          <br />
-          Click heare to Sign Up
-        </p>
-      </Fragment>}
-      {signUp &&
-        <SignUp onSignUp={signUpHandler}/>}
+          <p
+            onClick={forgotPasswordClickHandler}
+            style={{ textDecoration: "underline" }}
+          >
+            Forgot Password?
+          </p>
+        </Fragment>
+      )}
+      {signUp && <SignUp onSignUp={signUpHandler} />}
+      {forgotPass && <Redirect to="/forgotpassword"></Redirect>}
     </Fragment>
   );
 };
