@@ -1,7 +1,10 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
+import AuthContext from "../../context/auth-context";
 import classes from "./SignUp.module.css";
 
 const SignUp = (props) => {
+  const authCtx = useContext(AuthContext);
+
   const signuphandler = async (event) => {
     event.preventDefault();
     const email = event.target.elements["email"].value;
@@ -14,7 +17,7 @@ const SignUp = (props) => {
     } else {
       try {
         const response = await fetch(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCDH1TbzmhnXSFIsJYaiixXeP03MX4rw0Q`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${authCtx.APIkey}`,
           {
             method: "POST",
             body: JSON.stringify({

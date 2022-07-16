@@ -20,7 +20,7 @@ const LogIn = () => {
     } else {
       try {
         const response = await fetch(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCDH1TbzmhnXSFIsJYaiixXeP03MX4rw0Q`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${authCtx.APIkey}`,
           {
             method: "POST",
             body: JSON.stringify({

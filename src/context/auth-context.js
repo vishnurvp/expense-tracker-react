@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 
 const AuthContext = React.createContext({
+  APIkey: 'AIzaSyCDH1TbzmhnXSFIsJYaiixXeP03MX4rw0Q',
   isLoggedIn: false,
   token: "",
   login: () => {},
   logout: () => {},
+  editProfile: ()=>{},
 });
 
 export const AuthContextProvider = (props) => {
@@ -14,10 +16,18 @@ export const AuthContextProvider = (props) => {
   const loginHandler = (token) => {
     setToken(token);
   };
+
+  const editProfileHandler = () => {
+
+  }
+
   const authContextValue = {
+    APIkey: 'AIzaSyCDH1TbzmhnXSFIsJYaiixXeP03MX4rw0Q',
     isLoggedIn: isLoggedIn,
-    token: "",
+    token: token,
     login: loginHandler,
+    editProfile: editProfileHandler,
+
   };
 
   return (

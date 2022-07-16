@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import LogIn from "./components/authentication/LogIn";
 import AuthContext from "./context/auth-context";
+import WelcomePage from './components/WelcomePage';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -14,7 +15,7 @@ function App() {
       {authCtx.isLoggedIn && <Redirect to="/welcome" />}
       <Switch>
         <Route path="/welcome" excact>
-          <p>Welcome</p>
+          <WelcomePage/>
         </Route>
         <Route path="/login" exact>
           <LogIn />
