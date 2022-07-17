@@ -1,11 +1,15 @@
-import React, { Fragment, useContext, useEffect, useRef, useState} from "react";
+import React, { Fragment, useEffect, useRef, useState} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
-import AuthContext from "../../context/auth-context";
+import { authActions } from "../../context/authReducer";
 
 const EditProfile = (props) => {
   const [exit, setExit] = useState(false);
-  const authCtx = useContext(AuthContext);
-  const APIkey = authCtx.APIkey;
+
+  const dispatch = useDispatch();
+  const userIdToken = useSelector(state=>state.auth.idToken);
+
+  const APIkey = useSelector(state=>state.auth.apiKey);
   const dispName = useRef();
   const dispImg = useRef();
 
@@ -17,7 +21,7 @@ const EditProfile = (props) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            idToken: authCtx.token,
+            idToken: userIdToken,
         }),
     }
     )
@@ -25,10 +29,11 @@ const EditProfile = (props) => {
     .then(data=>{
         dispName.current.value = data.users[0].displayName || '';
         dispImg.current.value = data.users[0].photoUrl || '';
-        authCtx.setEmail(data.users[0].email || '');
-        authCtx.setIsEmailVerified(data.users[0].emailVerified);
+        dispatch(authActions.setEmail(data.users[0].email || ''))
+        dispatch(authActions.setIsEmailVerified(data.users[0].emailVerified))
+
     });
-  },[APIkey, authCtx]);
+  },[APIkey, userIdToken, dispatch]);
 
   const profileEditSubmitHandler = async (event) => {
     event.preventDefault();
@@ -36,14 +41,14 @@ const EditProfile = (props) => {
     const photoUrl = event.target.elements["photoUrlInp"].value;
     console.log(name, photoUrl);
     const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${authCtx.APIkey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${APIkey}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          idToken: authCtx.token,
+          idToken: userIdToken,
           displayName: name,
           photoUrl: photoUrl,
           returnSecureToken: true,

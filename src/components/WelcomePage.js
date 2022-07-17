@@ -1,30 +1,35 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
-import AuthContext from "../context/auth-context";
 import ExpenseForm from "./ExpenseTracker/ExpenseForm";
+import {authActions} from '../context/authReducer';
 
 const WelcomePage = (props) => {
-  const authCtx = useContext(AuthContext);
+  
+  const dispatch = useDispatch();
+  const userIdToken = useSelector(state=>state.auth.idToken);
+  const isEmailVerified = useSelector(state=>state.auth.isEmailVerified);
+  const APIkey = useSelector(state=>state.auth.apiKey);
 
   useEffect(() => {
     fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${authCtx.APIkey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${APIkey}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          idToken: authCtx.token,
+          idToken: userIdToken,
         }),
       }
     )
       .then((response) => response.json())
       .then((data) => {
-        authCtx.setEmail(data ? data.users[0].email : "");
-        authCtx.setIsEmailVerified(data ? data.users[0].emailVerified : false);
+        dispatch(authActions.setEmail(data ? data.users[0].email : ""));
+        dispatch(authActions.setIsEmailVerified(data ? data.users[0].emailVerified : false));
       });
-  },[authCtx]);
+  },[APIkey, userIdToken, dispatch]);
 
   const [editprofile, setEditProfile] = useState(false);
   const editProfileClickHandler = () => {
@@ -33,7 +38,7 @@ const WelcomePage = (props) => {
 
   const emailVerifyClickHandler = () => {
     fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${authCtx.APIkey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${APIkey}`,
       {
         method: "POST",
         headers: {
@@ -41,7 +46,7 @@ const WelcomePage = (props) => {
         },
         body: JSON.stringify({
           requestType: "VERIFY_EMAIL",
-          idToken: authCtx.token,
+          idToken: userIdToken,
         }),
       }
     )
@@ -53,7 +58,9 @@ const WelcomePage = (props) => {
   };
 
   const logoutClickHandler = () => {
-    authCtx.logout();
+
+    // authCtx.logout();
+    dispatch(authActions.logout())
   };
 
   return (
@@ -68,7 +75,7 @@ const WelcomePage = (props) => {
         )}
         {editprofile && <Redirect to={"/editprofile"} />}
         <br />
-        {!authCtx.isEmailVerified ? (
+        {!isEmailVerified ? (
           <button onClick={emailVerifyClickHandler}>
             Verify your Email ID
           </button>

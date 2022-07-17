@@ -1,8 +1,11 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import classes from "./ExpenseForm.module.css";
+import {expActions} from '../../context/expenseReducer';
 
 const ExpenseForm = (props) => {
-  const [expenses, setExpenses] = useState({});
+  const dispatch = useDispatch();
+  const expenses = useSelector(state=>state.exp.expenses)
   const costInp = useRef();
   const selectInp = useRef();
   const descInp = useRef();
@@ -19,9 +22,9 @@ const ExpenseForm = (props) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        setExpenses(data);
+        dispatch(expActions.setExpenses(data));
       });
-  }, []);
+  }, [dispatch]);
 
   const formSubmitHandler = (event) => {
     event.preventDefault();
@@ -55,7 +58,7 @@ const ExpenseForm = (props) => {
             )
               .then((res) => res.json())
               .then((data) => {
-                setExpenses(data);
+                dispatch(expActions.setExpenses(data));
                 event.target.elements["costInp"].value = "";
                 event.target.elements["catagoryInp"].value = "";
                 event.target.elements["descInp"].value = "";
@@ -86,7 +89,7 @@ const ExpenseForm = (props) => {
         )
           .then((res) => res.json())
           .then((data) => {
-            setExpenses(data);
+            dispatch(expActions.setExpenses(data));
           });
       }
     });
@@ -108,7 +111,7 @@ const ExpenseForm = (props) => {
         )
           .then((res) => res.json())
           .then((data) => {
-            setExpenses(data);
+            dispatch(expActions.setExpenses(data));
           });
       }
     });

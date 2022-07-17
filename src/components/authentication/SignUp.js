@@ -1,9 +1,9 @@
-import React, { Fragment, useContext } from "react";
-import AuthContext from "../../context/auth-context";
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
 import classes from "./SignUp.module.css";
 
 const SignUp = (props) => {
-  const authCtx = useContext(AuthContext);
+  const APIkey = useSelector((state) => state.auth.apiKey);
 
   const signuphandler = async (event) => {
     event.preventDefault();
@@ -17,7 +17,7 @@ const SignUp = (props) => {
     } else {
       try {
         const response = await fetch(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${authCtx.APIkey}`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${APIkey}`,
           {
             method: "POST",
             body: JSON.stringify({

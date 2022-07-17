@@ -1,21 +1,23 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Redirect} from "react-router-dom";
-import AuthContext from "../../context/auth-context";
+
+import { useDispatch, useSelector } from "react-redux";
+import {authActions} from '../../context/authReducer';
 
 import classes from "./LogIn.module.css";
 import SignUp from "./SignUp";
 
 const LogIn = () => {
+  const dispatch = useDispatch();
+  const APIkey = useSelector(state=>state.auth.apiKey);
+
   const [signUp, setSignUp] = useState(false);
   const [forgotPass, setForgotPass] = useState(false);
-
-  const authCtx = useContext(AuthContext);
 
   const loginHandler = async (event) => {
     event.preventDefault();
     const email = event.target.elements["logInEmail"].value;
     const password = event.target.elements["password"].value;
-
     if (password === "" || password.length < 8) {
       alert(
         `Password cannot be empty \nPassword should be atleast 8 charecters long`
@@ -23,7 +25,7 @@ const LogIn = () => {
     } else {
       try {
         const response = await fetch(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${authCtx.APIkey}`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${APIkey}`,
           {
             method: "POST",
             body: JSON.stringify({
@@ -41,7 +43,7 @@ const LogIn = () => {
         if (data.error) {
           alert(data.error.message);
         } else {
-          authCtx.login(data.idToken);
+          dispatch(authActions.login(data.idToken));
         }
       } catch (err) {
         alert(err.error.message);
