@@ -9,7 +9,7 @@ const ExpenseForm = (props) => {
   const costInp = useRef();
   const selectInp = useRef();
   const descInp = useRef();
-
+  
   useEffect(() => {
     fetch(
       `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`,
@@ -143,9 +143,6 @@ const ExpenseForm = (props) => {
       </form>
       <div>
         <ul>
-          {/* {expenses.map((item) => (
-            <li key={item.id}>{`cost: ${item.cost}\tcatagory: ${item.catagory}\tdescription: ${item.description}`}</li>
-          ))} */}
           {Object.keys(expenses).map((item) => (
             <li key={item} id={item}>
               {`cost: ${expenses[item].cost}\tcatagory: ${expenses[item].catagory}\tdescription: ${expenses[item].description}`}

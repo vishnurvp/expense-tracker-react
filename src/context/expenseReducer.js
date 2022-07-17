@@ -12,6 +12,9 @@ const expSlice = createSlice({
     setExpenses(state, action) {
       state.expenses = action.payload;
     },
+    setTotalExpense(state, action){
+      state.totalExpense = action.payload;
+    }
   },
 });
 

@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import ExpenseForm from "./ExpenseTracker/ExpenseForm";
 import {authActions} from '../context/authReducer';
-
 const WelcomePage = (props) => {
   
   const dispatch = useDispatch();
+  const expenses = useSelector(state=>state.exp.expenses);
   const userIdToken = useSelector(state=>state.auth.idToken);
   const isEmailVerified = useSelector(state=>state.auth.isEmailVerified);
   const APIkey = useSelector(state=>state.auth.apiKey);
+  const totalExpense = Object.keys(expenses).reduce((p , key)=> {return p + Number(expenses[key].cost)},0);
 
   useEffect(() => {
     fetch(
@@ -58,8 +59,6 @@ const WelcomePage = (props) => {
   };
 
   const logoutClickHandler = () => {
-
-    // authCtx.logout();
     dispatch(authActions.logout())
   };
 
@@ -67,6 +66,7 @@ const WelcomePage = (props) => {
     <Fragment>
       <Fragment>
         <h1>Welcome</h1>
+        {totalExpense>10000 && <button>Activate Premium</button>}
         <button onClick={logoutClickHandler}>Log Out</button>
         {!editprofile && (
           <button
