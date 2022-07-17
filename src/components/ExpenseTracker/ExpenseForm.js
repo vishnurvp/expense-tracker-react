@@ -1,8 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import classes from "./ExpenseForm.module.css";
 
 const ExpenseForm = (props) => {
   const [expenses, setExpenses] = useState({});
+  const costInp = useRef();
+  const selectInp = useRef();
+  const descInp = useRef();
 
   useEffect(() => {
     fetch(
@@ -44,25 +47,71 @@ const ExpenseForm = (props) => {
           body: JSON.stringify(expense),
         }
       )
-      .then((res) => res.json())
-      .then((resData) => {
-        if (!resData.error) {
-          fetch(
-            `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              console.log(data);
-              setExpenses(data);
-              event.target.elements["costInp"].value = "";
-              event.target.elements["catagoryInp"].value = "";
-              event.target.elements["descInp"].value = "";
-            });
-        } else {
-          console.log(resData.error);
-        }
-      });
+        .then((res) => res.json())
+        .then((resData) => {
+          if (!resData.error) {
+            fetch(
+              `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`
+            )
+              .then((res) => res.json())
+              .then((data) => {
+                setExpenses(data);
+                event.target.elements["costInp"].value = "";
+                event.target.elements["catagoryInp"].value = "";
+                event.target.elements["descInp"].value = "";
+              });
+          } else {
+            console.log(resData.error);
+          }
+        });
     }
+  };
+
+  const editExpenseClickHandler = (event) => {
+    const expId = event.target.id;
+    const expenseData = expenses[expId];
+    costInp.current.value = expenseData.cost;
+    selectInp.current.value = expenseData.catagory;
+    descInp.current.value = expenseData.description;
+    fetch(
+      `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses/${event.target.id}.json`,
+      {
+        method: "DELETE",
+      }
+    ).then((res) => {
+      // or get a new copy from server
+      if (res.status === 200) {
+        fetch(
+          `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            setExpenses(data);
+          });
+      }
+    });
+
+  };
+
+  const deleteExpenseClickHandler = (event) => {
+    fetch(
+      `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses/${event.target.id}.json`,
+      {
+        method: "DELETE",
+      }
+      // fileter the state object
+    ).then((res) => {
+      // or get a new copy from server
+      if (res.status === 200) {
+        fetch(
+          `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            setExpenses(data);
+          });
+      }
+    });
   };
 
   return (
@@ -70,11 +119,11 @@ const ExpenseForm = (props) => {
       <form onSubmit={formSubmitHandler} className={classes.form}>
         <label>Money spent in rupees</label>
         <br />
-        <input id="costInp" type={"number"}></input>
+        <input ref={costInp} id="costInp" type={"number"}></input>
         <br />
         <label>Select Catagory</label>
         <br />
-        <select id="catagoryInp">
+        <select ref={selectInp} id="catagoryInp">
           <option value="food">Food</option>
           <option value="drinks">Drinks</option>
           <option value="fuel">Fuel</option>
@@ -84,7 +133,7 @@ const ExpenseForm = (props) => {
         <br />
         <label>Description</label>
         <br />
-        <input id="descInp" type={"text"}></input>
+        <input ref={descInp} id="descInp" type={"text"}></input>
         <br />
         <button type="submit">Add</button>
         <br />
@@ -95,8 +144,14 @@ const ExpenseForm = (props) => {
             <li key={item.id}>{`cost: ${item.cost}\tcatagory: ${item.catagory}\tdescription: ${item.description}`}</li>
           ))} */}
           {Object.keys(expenses).map((item) => (
-            <li key={item}>
+            <li key={item} id={item}>
               {`cost: ${expenses[item].cost}\tcatagory: ${expenses[item].catagory}\tdescription: ${expenses[item].description}`}
+              <button id={item} onClick={editExpenseClickHandler}>
+                Edit
+              </button>
+              <button id={item} onClick={deleteExpenseClickHandler}>
+                Delete
+              </button>
             </li>
           ))}
         </ul>
