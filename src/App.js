@@ -9,9 +9,10 @@ import { useSelector } from 'react-redux';
 
 
 function App() {
+  const darkTheam = useSelector(state=>state.prem.darkTheam);
   const isAuth = useSelector(state=>state.auth.isAuthenticated);
   return (
-    <div className="App">
+    <div className={darkTheam ? "AppDark" : 'App'}>
       <h1>Expense Tracker App</h1>
       {!isAuth && <Redirect to={'/login'}/>}
       {isAuth && <Redirect to={'/welcome'}/>}
