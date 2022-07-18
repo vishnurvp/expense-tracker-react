@@ -1,12 +1,14 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import classes from "./SignUp.module.css";
 
 const SignUp = (props) => {
+  const [isSigningUp, setIsSigningUp] = useState(false);
   const APIkey = useSelector((state) => state.auth.apiKey);
 
   const signuphandler = async (event) => {
     event.preventDefault();
+    setIsSigningUp(true);
     const email = event.target.elements["email"].value;
     const password1 = event.target.elements["password1"].value;
     const password2 = event.target.elements["password2"].value;
@@ -31,7 +33,7 @@ const SignUp = (props) => {
           }
         );
         const data = await response.json();
-        //   console.log(data);
+          console.log(data);
         props.onSignUp(false);
         alert(`Signup Successfull \nYour Email: ${data.email}`);
       } catch (err) {
@@ -42,6 +44,7 @@ const SignUp = (props) => {
       event.target.elements["password1"].value = "";
       event.target.elements["password2"].value = "";
     }
+    setIsSigningUp(false);
   };
 
   return (
@@ -59,9 +62,9 @@ const SignUp = (props) => {
         <br />
         <input id="password2" type="password"></input>
         <br />
-        <button id="signUpBtn" type="submit">
+        {isSigningUp? <p>Signing Up ...</p> :<button id="signUpBtn" type="submit">
           Sign Up
-        </button>
+        </button>}
         <br />
       </form>
     </Fragment>

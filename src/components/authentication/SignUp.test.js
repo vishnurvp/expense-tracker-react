@@ -19,7 +19,7 @@ describe("signup component", () => {
     expect(helloWorldElement).toBeInTheDocument();
   });
 
-  test("renders sign up test", () => {
+  test("renders email test", () => {
     // Arrange
     render(
       <Provider store={store}>
@@ -33,7 +33,8 @@ describe("signup component", () => {
     const helloWorldElement = screen.getByText("Email");
     expect(helloWorldElement).toBeInTheDocument();
   });
-  test("renders sign up test", () => {
+
+  test("does not renders signing up test", () => {
     // Arrange
     render(
       <Provider store={store}>
@@ -44,22 +45,22 @@ describe("signup component", () => {
     // ... nothing
 
     // Assert
-    const helloWorldElement = screen.getByText("Password");
-    expect(helloWorldElement).toBeInTheDocument();
+    const outputElement = screen.queryByText("Signing Up ...", {exact: false});
+    expect(outputElement).toBeNull();
   });
 
-  test("renders sign up test", () => {
-    // Arrange
-    render(
-      <Provider store={store}>
-        <SignUp />
-      </Provider>
-    );
-    // Act
-    // ... nothing
+  // test("renders sign up test", () => {
+  //   // Arrange
+  //   render(
+  //     <Provider store={store}>
+  //       <SignUp />
+  //     </Provider>
+  //   );
+  //   // Act
+  //   // ... nothing
 
-    // Assert
-    const helloWorldElement = screen.getByText("Confirm Password");
-    expect(helloWorldElement).toBeInTheDocument();
-  });
+  //   // Assert
+  //   const helloWorldElement = screen.getByText("Confirm Password");
+  //   expect(helloWorldElement).toBeInTheDocument();
+  // });
 });
