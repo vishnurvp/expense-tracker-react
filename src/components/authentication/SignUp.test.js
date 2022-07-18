@@ -49,18 +49,4 @@ describe("signup component", () => {
     expect(outputElement).toBeNull();
   });
 
-  // test("renders sign up test", () => {
-  //   // Arrange
-  //   render(
-  //     <Provider store={store}>
-  //       <SignUp />
-  //     </Provider>
-  //   );
-  //   // Act
-  //   // ... nothing
-
-  //   // Assert
-  //   const helloWorldElement = screen.getByText("Confirm Password");
-  //   expect(helloWorldElement).toBeInTheDocument();
-  // });
 });
