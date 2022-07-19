@@ -1,10 +1,9 @@
 import React, { Fragment, useState } from "react";
-import { useSelector } from "react-redux";
 import classes from "./SignUp.module.css";
+import apiKey from "../../context/apiKeyStore";
 
 const SignUp = (props) => {
   const [isSigningUp, setIsSigningUp] = useState(false);
-  const APIkey = useSelector((state) => state.auth.apiKey);
 
   const signuphandler = async (event) => {
     event.preventDefault();
@@ -19,7 +18,7 @@ const SignUp = (props) => {
     } else {
       try {
         const response = await fetch(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${APIkey}`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
           {
             method: "POST",
             body: JSON.stringify({
@@ -33,7 +32,7 @@ const SignUp = (props) => {
           }
         );
         const data = await response.json();
-          console.log(data);
+          // console.log(data);
         props.onSignUp(false);
         alert(`Signup Successfull \nYour Email: ${data.email}`);
       } catch (err) {

@@ -6,13 +6,14 @@ import {expActions} from '../../context/expenseReducer';
 const ExpenseForm = (props) => {
   const dispatch = useDispatch();
   const expenses = useSelector(state=>state.exp.expenses)
+  const cleanUserEmail = useSelector(state=>state.auth.cleanEmail)
   const costInp = useRef();
   const selectInp = useRef();
   const descInp = useRef();
   
   useEffect(() => {
     fetch(
-      `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`,
+      `https://expensetracker-1febd-default-rtdb.firebaseio.com/${cleanUserEmail}expenses.json`,
       {
         method: "GET",
         headers: {
@@ -24,7 +25,7 @@ const ExpenseForm = (props) => {
       .then((data) => {
         dispatch(expActions.setExpenses(data));
       });
-  }, [dispatch]);
+  }, [dispatch, cleanUserEmail]);
 
   const formSubmitHandler = (event) => {
     event.preventDefault();
@@ -41,7 +42,7 @@ const ExpenseForm = (props) => {
       };
 
       fetch(
-        `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`,
+        `https://expensetracker-1febd-default-rtdb.firebaseio.com/${cleanUserEmail}expenses.json`,
         {
           method: "POST",
           headers: {
@@ -54,7 +55,7 @@ const ExpenseForm = (props) => {
         .then((resData) => {
           if (!resData.error) {
             fetch(
-              `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`
+              `https://expensetracker-1febd-default-rtdb.firebaseio.com/${cleanUserEmail}expenses.json`
             )
               .then((res) => res.json())
               .then((data) => {
@@ -77,7 +78,7 @@ const ExpenseForm = (props) => {
     selectInp.current.value = expenseData.catagory;
     descInp.current.value = expenseData.description;
     fetch(
-      `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses/${event.target.id}.json`,
+      `https://expensetracker-1febd-default-rtdb.firebaseio.com/${cleanUserEmail}expenses/${event.target.id}.json`,
       {
         method: "DELETE",
       }
@@ -85,7 +86,7 @@ const ExpenseForm = (props) => {
       // or get a new copy from server
       if (res.status === 200) {
         fetch(
-          `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`
+          `https://expensetracker-1febd-default-rtdb.firebaseio.com/${cleanUserEmail}expenses.json`
         )
           .then((res) => res.json())
           .then((data) => {
@@ -98,7 +99,7 @@ const ExpenseForm = (props) => {
 
   const deleteExpenseClickHandler = (event) => {
     fetch(
-      `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses/${event.target.id}.json`,
+      `https://expensetracker-1febd-default-rtdb.firebaseio.com/${cleanUserEmail}expenses/${event.target.id}.json`,
       {
         method: "DELETE",
       }
@@ -107,7 +108,7 @@ const ExpenseForm = (props) => {
       // or get a new copy from server
       if (res.status === 200) {
         fetch(
-          `https://expensetracker-1febd-default-rtdb.firebaseio.com/expenses.json`
+          `https://expensetracker-1febd-default-rtdb.firebaseio.com/${cleanUserEmail}expenses.json`
         )
           .then((res) => res.json())
           .then((data) => {
@@ -116,6 +117,21 @@ const ExpenseForm = (props) => {
       }
     });
   };
+
+  const ExpensesJsx = () => {
+    if (!expenses) return <p>No Expenses</p>
+    return(<ul>{Object.keys(expenses).map((item) => (
+      <li key={item} id={item}>
+        {`cost: ${expenses[item].cost}\tcatagory: ${expenses[item].catagory}\tdescription: ${expenses[item].description}`}
+        <button id={item} onClick={editExpenseClickHandler}>
+          Edit
+        </button>
+        <button id={item} onClick={deleteExpenseClickHandler}>
+          Delete
+        </button>
+      </li>
+    ))}</ul>)
+  }
 
   return (
     <Fragment>
@@ -142,19 +158,7 @@ const ExpenseForm = (props) => {
         <br />
       </form>
       <div>
-        <ul>
-          {Object.keys(expenses).map((item) => (
-            <li key={item} id={item}>
-              {`cost: ${expenses[item].cost}\tcatagory: ${expenses[item].catagory}\tdescription: ${expenses[item].description}`}
-              <button id={item} onClick={editExpenseClickHandler}>
-                Edit
-              </button>
-              <button id={item} onClick={deleteExpenseClickHandler}>
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+        {ExpensesJsx()}
       </div>
     </Fragment>
   );

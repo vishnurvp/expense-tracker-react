@@ -1,15 +1,14 @@
 import React, { Fragment, useState } from "react";
-import { Redirect} from "react-router-dom";
-
-import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {authActions} from '../../context/authReducer';
+import apiKey from "../../context/apiKeyStore";
 
 import classes from "./LogIn.module.css";
 import SignUp from "./SignUp";
 
 const LogIn = () => {
   const dispatch = useDispatch();
-  const APIkey = useSelector(state=>state.auth.apiKey);
 
   const [signUp, setSignUp] = useState(false);
   const [forgotPass, setForgotPass] = useState(false);
@@ -25,7 +24,7 @@ const LogIn = () => {
     } else {
       try {
         const response = await fetch(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${APIkey}`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
           {
             method: "POST",
             body: JSON.stringify({
@@ -44,6 +43,9 @@ const LogIn = () => {
           alert(data.error.message);
         } else {
           dispatch(authActions.login(data.idToken));
+          dispatch(authActions.setEmail(data.email));
+          // console.log(data.email);
+          dispatch(authActions.setCleanEmail(data.email.replace(/[^a-zA-Z ]/g, "")));
         }
       } catch (err) {
         alert(err.error.message);

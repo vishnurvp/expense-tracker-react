@@ -1,11 +1,9 @@
 import React, { Fragment, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import classes from './ForgotPassword.module.css';
+import apiKey from "../../context/apiKeyStore";
 
 const ForgotPassword = (props) => {
-
-    const APIkey = useSelector(state=>state.auth.apiKey);
     const [isSending, setIsSending] = useState(false);
     const history = useHistory();
 
@@ -15,7 +13,7 @@ const ForgotPassword = (props) => {
         setIsSending(true);
         event.preventDefault();
         const email = recEmailInp.current.value;
-        fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${APIkey}`,
+        fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`,
         {
             method: 'POST',
             headers: {

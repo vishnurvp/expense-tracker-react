@@ -5,6 +5,7 @@ import ExpenseForm from "./ExpenseTracker/ExpenseForm";
 import { authActions } from "../context/authReducer";
 import { premActions } from "../context/premiumReducer";
 import classes from "./WelcomePage.module.css";
+import apiKey from '../context/apiKeyStore';
 
 const WelcomePage = (props) => {
   const isPremium = useSelector((state) => state.prem.isPremium);
@@ -13,16 +14,18 @@ const WelcomePage = (props) => {
   const expenses = useSelector((state) => state.exp.expenses);
   const userIdToken = useSelector((state) => state.auth.idToken);
   const isEmailVerified = useSelector((state) => state.auth.isEmailVerified);
-  const APIkey = useSelector((state) => state.auth.apiKey);
-  const totalExpense = Object.keys(expenses).reduce((p, key) => {
-    return p + Number(expenses[key].cost);
-  }, 0);
+  let totalExpense = 0;
+  if (expenses) {
+    totalExpense = Object.keys(expenses).reduce((p, key) => {
+      return p + Number(expenses[key].cost);
+    }, 0);
+  }
   const userEmail = useSelector((state)=>state.auth.email);
   const cleanUserEmail = userEmail.replace(/[^a-zA-Z0-9 ]/g, '');
 
   useEffect(() => {
     fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${APIkey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
       {
         method: "POST",
         headers: {
@@ -42,7 +45,7 @@ const WelcomePage = (props) => {
           )
         );
       });
-  }, [APIkey, userIdToken, dispatch]);
+  }, [userIdToken, dispatch]);
 
   const [editprofile, setEditProfile] = useState(false);
   const editProfileClickHandler = () => {
@@ -51,7 +54,7 @@ const WelcomePage = (props) => {
 
   const emailVerifyClickHandler = () => {
     fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${APIkey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`,
       {
         method: "POST",
         headers: {

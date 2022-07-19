@@ -2,19 +2,18 @@ import React, { Fragment, useEffect, useRef, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { authActions } from "../../context/authReducer";
+import apiKey from "../../context/apiKeyStore";
 
 const EditProfile = (props) => {
   const [exit, setExit] = useState(false);
 
   const dispatch = useDispatch();
   const userIdToken = useSelector(state=>state.auth.idToken);
-
-  const APIkey = useSelector(state=>state.auth.apiKey);
   const dispName = useRef();
   const dispImg = useRef();
 
   useEffect(()=>{
-    fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${APIkey}`,
+    fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
     {
         method: 'POST',
         headers: {
@@ -33,7 +32,7 @@ const EditProfile = (props) => {
         dispatch(authActions.setIsEmailVerified(data.users[0].emailVerified))
 
     });
-  },[APIkey, userIdToken, dispatch]);
+  },[userIdToken, dispatch]);
 
   const profileEditSubmitHandler = async (event) => {
     event.preventDefault();
@@ -41,7 +40,7 @@ const EditProfile = (props) => {
     const photoUrl = event.target.elements["photoUrlInp"].value;
     console.log(name, photoUrl);
     const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${APIkey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`,
       {
         method: "POST",
         headers: {
