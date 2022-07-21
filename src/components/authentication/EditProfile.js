@@ -38,7 +38,7 @@ const EditProfile = (props) => {
     event.preventDefault();
     const name = event.target.elements["nameInp"].value;
     const photoUrl = event.target.elements["photoUrlInp"].value;
-    console.log(name, photoUrl);
+    // console.log(name, photoUrl);
     const response = await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`,
       {
@@ -55,7 +55,7 @@ const EditProfile = (props) => {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     event.target.elements["nameInp"].value = "";
     event.target.elements["photoUrlInp"].value = "";
   };
